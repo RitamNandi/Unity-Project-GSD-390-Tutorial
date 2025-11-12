@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Pickup : MonoBehaviour
 {
@@ -35,15 +36,25 @@ public class Pickup : MonoBehaviour
         // Check if the colliding object has the "Player" tag
         if (other.CompareTag("Player"))
         {
-            // Instantiate the particle effect
-            if (particleEffectPrefab != null)
-            {
-                Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
-            }
-
-            // Destroy the star
-            Destroy(gameObject);
-
+            StartCoroutine(CollectStar());
         }
     }
+
+    private IEnumerator CollectStar()
+    {
+        // Instantiate the particle effect
+        if (particleEffectPrefab != null)
+        {
+            Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        int lastValue;
+        StarTracker.RegisterStarCollected(out lastValue);
+
+        Destroy(gameObject);
+
+        yield return null;
+        
+    }
+
 }
